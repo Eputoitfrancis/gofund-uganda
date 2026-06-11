@@ -37,7 +37,8 @@ class Campaign(db.Model):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    campaigns = Campaign.query.order_by(Campaign.id.desc()).limit(3).all()
+    return render_template('index.html', campaigns=campaigns)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
