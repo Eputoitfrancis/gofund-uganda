@@ -13,6 +13,8 @@ app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
+ADMIN_EMAIL = 'franeputoit@gmail.com'
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
@@ -63,6 +65,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['username'] = user.username
+            session['is_admin'] = (email == ADMIN_EMAIL)
             return redirect(url_for('home'))
         else:
             flash('Invalid email or password!')
@@ -131,6 +134,31 @@ def donate(campaign_id):
     db.session.commit()
     flash(f'Thank you! You donated UGX {amount} to {campaign.title}')
     return redirect(url_for('campaign_detail', campaign_id=campaign_id))
+
+@app.route('/admin')
+def admin():
+    if not session.get('is_admin'):
+        flash('Access denied!')
+        return redirect(url_for('home'))
+    users = User.query.all()
+    campaigns = Campaign.query.all()
+    total_users = len(users)
+    total_campaigns = len(campaigns)
+    total_donations = sum(c.raised for c in campaigns)
+    return render_template('admin.html', users=users, campaigns=campaigns,
+                           total_users=total_users, total_campaigns=total_campaigns,
+                           total_donations=total_donations)
+
+@app.route('/admin/delete/<int:campaign_id>')
+def admin_delete(campaign_id):
+    if not session.get('is_admin'):
+        flash('Access denied!')
+        return redirect(url_for('home'))
+    campaign = Campaign.query.get_or_404(campaign_id)
+    db.session.delete(campaign)
+    db.session.commit()
+    flash('Campaign deleted!')
+    return redirect(url_for('admin'))
 
 if __name__ == '__main__':
     with app.app_context():

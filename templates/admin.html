@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - GoFund Uganda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav>
+        <h1>GoFund Uganda - Admin</h1>
+        <a href="/admin">Admin Panel</a>
+        <a href="/logout">Logout</a>
+    </nav>
+
+    <div class="campaigns-container">
+        <h2>Admin Dashboard</h2>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>{{ total_users }}</h3>
+                <p>Total Users</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ total_campaigns }}</h3>
+                <p>Total Campaigns</p>
+            </div>
+            <div class="stat-card">
+                <h3>UGX {{ total_donations }}</h3>
+                <p>Total Donations</p>
+            </div>
+        </div>
+
+        <h3 style="margin: 20px 0;">All Users</h3>
+        <table class="admin-table">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3 style="margin: 20px 0;">All Campaigns</h3>
+        <table class="admin-table">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Goal</th>
+                <th>Raised</th>
+                <th>Action</th>
+            </tr>
+            {% for campaign in campaigns %}
+            <tr>
+                <td>{{ campaign.id }}</td>
+                <td>{{ campaign.title }}</td>
+                <td>UGX {{ campaign.goal }}</td>
+                <td>UGX {{ campaign.raised }}</td>
+                <td>
+                    <a href="/admin/delete/{{ campaign.id }}" 
+                       onclick="return confirm('Are you sure?')"
+                       class="delete-btn">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+</html>
