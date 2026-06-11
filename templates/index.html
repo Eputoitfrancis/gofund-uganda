@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoFund Uganda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav>
+        <h1>GoFund Uganda</h1>
+        {% if session.get('user_id') %}
+            <span style="color:white">Welcome, {{ session['username'] }}!</span>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </nav>
+
+    <div class="hero">
+        <h2>Empowering Ugandans to Fund What Matters</h2>
+        <p>Start a campaign, donate, and make a difference today.</p>
+        {% if session.get('user_id') %}
+            <a href="/campaigns/new" class="btn">Start a Campaign</a>
+        {% else %}
+            <a href="/register" class="btn">Get Started</a>
+        {% endif %}
+    </div>
+
+</body>
+</html>

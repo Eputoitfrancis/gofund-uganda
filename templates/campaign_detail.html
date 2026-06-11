@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ campaign.title }} - GoFund Uganda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav>
+        <h1>GoFund Uganda</h1>
+        {% if session.get('user_id') %}
+            <span>Welcome, {{ session['username'] }}!</span>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/campaigns">Campaigns</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </nav>
+
+    <div class="campaigns-container">
+        <div class="campaign-card">
+            {% if campaign.image %}
+                <img src="{{ url_for('static', filename='uploads/' + campaign.image) }}" 
+                     alt="{{ campaign.title }}" class="campaign-image">
+            {% endif %}
+            <h2>{{ campaign.title }}</h2>
+            <p>{{ campaign.description }}</p>
+            <br>
+            <p><strong>Goal:</strong> UGX {{ campaign.goal }}</p>
+            <p><strong>Raised:</strong> UGX {{ campaign.raised }}</p>
+            <p><strong>Remaining:</strong> UGX {{ campaign.goal - campaign.raised }}</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ (campaign.raised / campaign.goal * 100)|int }}%"></div>
+            </div>
+            <p>{{ (campaign.raised / campaign.goal * 100)|int }}% funded</p>
+            <br>
+            {% if session.get('user_id') %}
+            <div class="donate-box">
+                <h3>Make a Donation</h3>
+                <form method="POST" action="/campaigns/{{ campaign.id }}/donate">
+                    <input type="number" name="amount" placeholder="Enter amount in UGX" required>
+                    <button type="submit">Donate Now</button>
+                </form>
+            </div>
+            {% else %}
+                <p>Please <a href="/login">login</a> to donate.</p>
+            {% endif %}
+        </div>
+        <a href="/campaigns" class="btn">Back to Campaigns</a>
+    </div>
+
+</body>
+</html>
