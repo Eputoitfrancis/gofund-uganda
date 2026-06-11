@@ -391,3 +391,51 @@ nav span {
     font-weight: 500;
     font-size: 14px;
 }
+.profile-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    margin-top: 20px;
+}
+
+.profile-card h3 {
+    color: #c8102e;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.profile-card input {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    transition: border 0.3s;
+}
+
+.profile-card input:focus {
+    border-color: #c8102e;
+    outline: none;
+}
+
+.profile-card button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #c8102e, #8b0000);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: 'Poppins', sans-serif;
+    transition: transform 0.3s;
+}
+
+.profile-card button:hover {
+    transform: translateY(-2px);
+}

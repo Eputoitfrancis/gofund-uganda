@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - GoFund Uganda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav>
+        <h1>🇺🇬 GoFund Uganda</h1>
+        {% if session.get('user_id') %}
+            <span>Welcome, {{ session['username'] }}!</span>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/campaigns">Campaigns</a>
+            <a href="/profile">Profile</a>
+            {% if session.get('is_admin') %}
+                <a href="/admin">Admin</a>
+            {% endif %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/campaigns">Campaigns</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </nav>
+
+    <div class="campaigns-container">
+        <h2>👤 My Profile</h2>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>{{ my_campaigns }}</h3>
+                <p>My Campaigns</p>
+            </div>
+            <div class="stat-card">
+                <h3>UGX {{ total_raised }}</h3>
+                <p>Total Raised</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <p class="error">{{ messages[0] }}</p>
+            {% endif %}
+        {% endwith %}
+
+        <div class="profile-card">
+            <h3>Update Profile</h3>
+            <form method="POST" action="/profile">
+                <input type="text" name="username" value="{{ user.username }}" placeholder="Full Name" required>
+                <input type="email" value="{{ user.email }}" disabled style="background:#f0f0f0; cursor:not-allowed;">
+                <h3 style="margin: 15px 0 5px;">Change Password</h3>
+                <input type="password" name="current_password" placeholder="Current Password">
+                <input type="password" name="new_password" placeholder="New Password">
+                <button type="submit">Update Profile</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

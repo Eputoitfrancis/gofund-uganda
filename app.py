@@ -87,6 +87,32 @@ def dashboard():
     total_raised = sum(c.raised for c in my_campaigns)
     return render_template('dashboard.html', my_campaigns=my_campaigns, total_raised=total_raised)
 
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if not session.get('user_id'):
+        flash('Please login first!')
+        return redirect(url_for('login'))
+    user = User.query.get(session['user_id'])
+    my_campaigns = Campaign.query.filter_by(user_id=session['user_id']).count()
+    total_raised = sum(c.raised for c in Campaign.query.filter_by(user_id=session['user_id']).all())
+    if request.method == 'POST':
+        username = request.form['username']
+        current_password = request.form['current_password']
+        new_password = request.form['new_password']
+        user.username = username
+        session['username'] = username
+        if current_password and new_password:
+            if bcrypt.check_password_hash(user.password, current_password):
+                user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+                flash('Password updated successfully!')
+            else:
+                flash('Current password is incorrect!')
+                return redirect(url_for('profile'))
+        db.session.commit()
+        flash('Profile updated successfully!')
+        return redirect(url_for('profile'))
+    return render_template('profile.html', user=user, my_campaigns=my_campaigns, total_raised=total_raised)
+
 @app.route('/campaigns')
 def campaigns():
     query = request.args.get('q', '')
