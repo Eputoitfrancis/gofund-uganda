@@ -78,6 +78,22 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        new_password = request.form['new_password']
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+            db.session.commit()
+            flash('Password reset successfully! Please login.')
+            return redirect(url_for('login'))
+        else:
+            flash('No account found with that email.')
+            return redirect(url_for('forgot_password'))
+    return render_template('forgot_password.html')
+
 @app.route('/dashboard')
 def dashboard():
     if not session.get('user_id'):
